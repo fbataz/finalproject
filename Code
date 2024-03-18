@@ -1,6 +1,6 @@
 import threading # Module to help our game run different tasks at the same time (ie. timer)
 import time # Will help us run our timer and suspend further lines of code while timer is running
-import sys # Helps manage input/outputs while our timer is running simultaneously.
+import sys # Module that allows us to communicate with Python as our code runs 
 import random # Module helps perform randomization procedures such as randomizing the question order for our game
 
 questions = [
@@ -38,31 +38,51 @@ class JeopardyGame:
     def __init__(self, questions):
         self.players = [] # Initializes an empty list that will include the players in the game
         self.questions = list(questions)  # Makes a copy of the questions
-        self.time_limit = 10  # Adds time limit to questions
+        self.time_limit = 15  # Adds time limit to questions
         random.shuffle(self.questions)  # Shuffle questions
+        self.current_player_index = 0 # Tracks the current player index
+        self.question_index = 0  # Tracks the current question index
 
         def add_players():# Method adds players to the game we are initializing
             num_players = int(input('Number of players:'))
+            player_names = []
             for value in range(num_players):
                 name = input('Enter player name:') # Assigns the name given to each player class
                 score = 0 # Initializes player scores to 0 when a Player class is made
-                self.players.append(Player(name)) # Appends empty list to include players specified
-        add_players()
+                player_names.append(name)
+            random.shuffle(player_names) # Randomizes order of names in the player_names list
+            for name in player_names:
+                self.players.append(Player(name)) # Adds players in a random order to self.players under initialization
+        
+        add_players() # Calls add_players() method
 
     def start(self): # Method to start the game and get it running
-        question_index = 0  # Tracks the current question index
+        
         total_questions = len(self.questions) # Assigns an integer value to total_questions that corresponds to the length of the self.questions list
         
-        while question_index < total_questions:
-            for player in self.players:
-                if question_index >= total_questions:
-                    break  # Break if no more questions are left
-                if self.ask_question(self.questions[question_index], player): #calls asks_question method, passing current question
-                    return # Allows for player to quit the game
-                question_index += 1
-
-        self.rank_players()
-
+        while self.question_index < total_questions:
+            player = self.players[self.current_player_index]
+            answer = self.ask_question(self.questions[self.question_index], player) 
+            
+            if answer: # Calls asks question method, passing current question
+                self.current_player_index += 0 # If answered correctly, the same player continues
+                self.question_index += 1 # Indicate that question asked increases the index
+            
+            if not answer: # Calls asks question method, passing current question
+                self.current_player_index = (self.current_player_index + 1) % len(self.players) # If answered incorrectly the player loses their turn, and the next player answers
+                                                                                                # The players take their turns in same order
+                self.question_index += 0 # The same question is asked again if input is incorrect
+        
+                
+            
+            if answer == 'quit':
+                return # Exits if 'quit' is the input
+                
+            if self.question_index >= total_questions:
+                break  # Break if no more questions are left
+           
+        self.rank_players() # Calls rank players method
+        
     def ask_question(self, question, player): 
         """
         Method of JeopardyGame class:
@@ -74,35 +94,51 @@ class JeopardyGame:
         print(f"\n{player.name}, Category: {category}, Points: {points}")
         print(text)
         
-        answered = [False]
+        time_is_up = threading.Event() # Event that signals that time ran out
+        answered = [False] # This tracks if an input has been given
+        
         def timer():
             for i in range(self.time_limit, 0, -1):
-                if answered[0]:
+                if answered[0] or time_is_up.is_set(): # Checks if an answer is given or if time has ran out 
                     return
-                sys.stdout.write(f"\rTime remaining: {i} seconds ")
-                sys.stdout.flush()
+                sys.stdout.write(f"\rTime remaining: {i} seconds ") # Displays the time remaining in a single line that is 
+                                                                    #overwritten every time the for loop executes
+                sys.stdout.flush() # Displays time remaining immediately as it counts down
                 time.sleep(1)
-            if not answered[0]:
+            if not answered[0]: 
                 print("Time's up!")
+                time_is_up.set() # If there is no answer given, time is up event is triggered.
         
-        timer_thread = threading.Thread(target=timer)
-        timer_thread.start()
-        player_answer = input("\nYour answer: ").strip()
-        answered[0] = True
+        timer_thread = threading.Thread(target=timer) # Create  timer thread
+        timer_thread.start() # Start thread
+        player_answer = input("\nYour answer: ").strip() 
+        answered[0] = True # Update tracking to indicate that an input was given
+        
+        if time_is_up.is_set():  # Check if time is up
+            print("Time ran out! Moving onto the next player.")
+            return False
         
         if player_answer.lower() == 'quit': 
+            timer_thread.join() # Waits for timer to countdown
             print ("Quitting the game. Thanks for playing!")
-            return True 
-        if player_answer.lower() == answer.lower(): #checks to see if players answer matches correct answer (ignores case)
-            player.update_score(points) #updates the point associated with question to players total points
+            return 'quit'
+        
+        if player_answer.lower() == answer.lower(): # Checks to see if players answer matches correct answer (ignores case)
+            timer_thread.join() 
+            player.update_score(points) # Updates the point associated with question to players total points
             print("Correct!")
+            answered[0] = True
+            return True
         else:
+            timer_thread.join()
             print("Incorrect.")
+            answered[0] = True
+            return False
+        
 
     def rank_players(self): # Method that will rank players based on their final score
         print("Game Over. Final rankings:")
-        sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True) #creates new list and sorts players based on scores, ranking highest to lowest
-        for index, player in enumerate(sorted_players, start=1):
+        sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True) # Creates new list and sorts players based on scores, ranking highest to lowest
+        for index, player in enumerate(sorted_players, start=1): 
             print(f"{index}. {player.name}: {player.score}")
-
-
+        
