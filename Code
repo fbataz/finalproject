@@ -52,7 +52,8 @@ class JeopardyGame:
             for player in self.players:
                 if question_index >= total_questions:
                     break  # Break if no more questions are left
-                self.ask_question(self.questions[question_index], player)
+                if self.ask_question(self.questions[question_index], player):
+                    return
                 question_index += 1
         self.rank_players()
 
@@ -76,6 +77,10 @@ class JeopardyGame:
         timer_thread.start()
         player_answer = input("\nYour answer: ").strip()
         answered[0] = True
+        
+        if player_answer.lower() == 'quit':
+            print ('Quitting the game. Thanks for playing!')
+            return True
         
         if player_answer.lower() == answer.lower():
             player.update_score(points)
