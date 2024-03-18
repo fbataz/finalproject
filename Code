@@ -84,7 +84,7 @@ class JeopardyGame:
         answered[0] = True
         
         if player_answer.lower() == 'quit':
-            print ('Quitting the game. Thanks for playing!')
+            print ("Quitting the game. Thanks for playing!")
             return True
         if player_answer.lower() == answer.lower():
             player.update_score(points)
