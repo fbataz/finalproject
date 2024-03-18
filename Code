@@ -86,7 +86,6 @@ class JeopardyGame:
         if player_answer.lower() == 'quit':
             print ('Quitting the game. Thanks for playing!')
             return True
-        
         if player_answer.lower() == answer.lower():
             player.update_score(points)
             print("Correct!")
@@ -97,7 +96,7 @@ class JeopardyGame:
         '''
         method that will rank players based on their final score
         '''
-        print("\nGame Over. Final rankings:")
+        print("Game Over. Final rankings:")
         sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True)
         for index, player in enumerate(sorted_players, start=1):
             print(f"{index}. {player.name}: {player.score}")
