@@ -137,6 +137,10 @@ class JeopardyGame:
         
 
     def rank_players(self): # Method that will rank players based on their final score
+        """
+        Method of JeopardyGame class:
+        Ranks layers based on descending order of earned points
+        """
         print("Game Over. Final rankings:")
         sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True) # Creates new list and sorts players based on scores, ranking highest to lowest
         for index, player in enumerate(sorted_players, start=1): 
