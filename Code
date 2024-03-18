@@ -66,31 +66,31 @@ class JeopardyGame:
         while self.question_index < total_questions:
             player = self.players[self.current_player_index]
             
-            if len(players_attempted) == len(self.players): # Checking lengths of set of players that attempted and list of players in the game. If equal, then all players had a turn.
-                _, _, correct_answer, _ = self.questions[self.question_index]
-                print(f"Sorry. All players have attempted. The correct answer was {correct_answer}. Moving on!")
+            if len(players_attempted) == len(self.players):
+                print(f"Sorry. All players have attempted. Moving on!")
                 self.question_index += 1
                 players_attempted.clear()
                 continue
             
-            if player in players_attempted: # Checking if the player is in the set of players that have attempted to auto-skip that player.
+            if player in players_attempted:
                 self.current_player_index = (self.current_player_index + 1) % len(self.players)
                 continue
             
             answer = self.ask_question(self.questions[self.question_index], player)
-            players_attempted.add(player) # Adds current player to the set of players that have attempted the question.
+            players_attempted.add(player)
+            
+            if answer == 'quit':
+                return # Exits if 'quit' is the input
             
             if answer: # Calls asks question method, passing current question
                 self.current_player_index += 0 # If answered correctly, the same player continues
                 self.question_index += 1 # Indicate that question asked increases the index
+                players_attempted.clear()
             
             if not answer: # Calls asks question method, passing current question
                 self.current_player_index = (self.current_player_index + 1) % len(self.players) # If answered incorrectly the player loses their turn, and the next player answers
                                                                                                 # The players take their turns in same order
                 self.question_index += 0 # The same question is asked again if input is incorrect    
-            
-            if answer == 'quit':
-                return # Exits if 'quit' is the input
                 
             if self.question_index >= total_questions:
                 break  # Break if no more questions are left
@@ -164,4 +164,3 @@ class JeopardyGame:
         sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True) # Creates new list and sorts players based on scores, ranking highest to lowest
         for index, player in enumerate(sorted_players, start=1): 
             print(f"{index}. {player.name}: {player.score}")
-        
