@@ -57,8 +57,8 @@ class JeopardyGame:
             for player in self.players:
                 if question_index >= total_questions:
                     break  # Break if no more questions are left
-                if self.ask_question(self.questions[question_index], player):
-                    return 
+                if self.ask_question(self.questions[question_index], player): #calls asks question method, passing current question
+                    return # Allows for player to quit the game
                 question_index += 1
 
         self.rank_players()
