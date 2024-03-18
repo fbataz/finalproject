@@ -1,0 +1,92 @@
+import threading # Module to help our game run different tasks at the same time (ie. timer)
+import time # Will help us run our timer and suspend further lines of code while timer is running
+import sys # 
+import random # Module helps perform randomization procedures such as randomizing the question order for our game
+
+questions = [
+    ("Glycolysis", "What is the starting molecule of glycolysis?", "Glucose", 100),
+    ("Glycolysis", "What is the end product of glycolysis under aerobic conditions?", "Pyruvate", 200),
+    ("Glycolysis", "What molecule is produced as an energy currency during glycolysis?", "ATP", 100),
+    ("Glycolysis", "What reducing agent is generated during glycolysis?", "NADH", 300),
+    ("Krebs Cycle", "What molecule initiates the Krebs cycle by reacting with oxaloacetate?", "Acetyl-CoA", 200),
+    ("Krebs Cycle", "Which molecule is a six-carbon compound that starts the Krebs cycle?", "Citrate", 300),
+    ("Krebs Cycle", "What is the direct source of GTP production in the Krebs cycle?", "Succinate", 300),
+    ("Pentose Phosphate Pathway", "What is the five-carbon sugar produced in the pentose phosphate pathway?", "Ribose", 200),
+    ("Pentose Phosphate Pathway", "Which molecule provides reducing power for biosynthetic reactions in the pentose phosphate pathway?", "NADPH", 200),
+    ("Calvin Cycle", "What molecule is regenerated at the end of the Calvin cycle to facilitate the cycle's continuation?", "RuBP", 300),
+    ("Calvin Cycle", "During the Calvin cycle, what three-carbon molecule is produced that can be used to form glucose?", "G3P", 200),
+    ("Electron Transport Chain", "What is the final electron acceptor in the electron transport chain?", "Oxygen", 100),
+    ("Electron Transport Chain", "What molecule is produced as a by-product of oxygen accepting electrons in the ETC?", "Water", 200),
+    ("Fatty Acid Synthesis", "What two-carbon molecule is the building block for fatty acid synthesis?", "Acetyl-CoA", 200),
+    ("Fatty Acid Synthesis", "What is the end product of fatty acid synthesis that consists of 16 carbon atoms?", "Palmitate", 200),
+    ("Fatty Acid Oxidation", "During beta-oxidation, what molecule is repeatedly cleaved off from fatty acids?", "Acetyl-CoA", 100),
+    ("Amino Acid Metabolism", "Which amino acid serves as a key nitrogen donor in the synthesis of other amino acids?", "Glutamate", 100),
+    ("Amino Acid Metabolism", "What is the main nitrogenous waste product in humans that is formed from ammonia?", "Urea", 100),
+    ("Urea Cycle", "What is the final product of the urea cycle, which is excreted in urine?", "Urea", 100),
+    ("Nucleotide Synthesis", "What is the precursor molecule to both adenine and guanine nucleotides?", "IMP", 100),
+]
+
+class Player: # Defining Player class
+    def __init__(self, name):
+        self.name = name # Assigns the name given to each player class
+        self.score = 0 # Initializes player scores to 0 when a Player class is made
+
+    def update_score(self, points): # Method updates player score
+        self.score += points
+
+class JeopardyGame:
+    def __init__(self, questions):
+        self.players = [] # Initializes an empty list that will include the players in the game
+        self.questions = list(questions)  # Makes a copy of the questions
+        self.time_limit = 10  # Adds time limit to questions
+        random.shuffle(self.questions)  # Shuffle questions
+
+    def add_player(self, name): # Method adds players to the game we are initializing
+        self.players.append(Player(name)) # Appends empty list to include players specified
+
+    def start(self): # Method to start the game and get it running
+        question_index = 0  # Tracks the current question index
+        total_questions = len(self.questions) # Assigns an integer value to total_questions that corresponds to the length of the self.questions list
+        
+        while question_index < total_questions:
+            for player in self.players:
+                if question_index >= total_questions:
+                    break  # Break if no more questions are left
+                self.ask_question(self.questions[question_index], player)
+                question_index += 1
+        self.rank_players()
+
+    def ask_question(self, question, player):
+        category, text, answer, points = question
+        print(f"\n{player.name}, Category: {category}, Points: {points}")
+        print(text)
+        
+        answered = [False]
+        def timer():
+            for i in range(self.time_limit, 0, -1):
+                if answered[0]:
+                    return
+                sys.stdout.write(f"\rTime remaining: {i} seconds ")
+                sys.stdout.flush()
+                time.sleep(1)
+            if not answered[0]:
+                print("\nTime's up!")
+        
+        timer_thread = threading.Thread(target=timer)
+        timer_thread.start()
+        player_answer = input("\nYour answer: ").strip()
+        answered[0] = True
+        
+        if player_answer.lower() == answer.lower():
+            player.update_score(points)
+            print("Correct!")
+        else:
+            print("Incorrect.")
+
+    def rank_players(self):
+        print("\nGame Over. Final rankings:")
+        sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True)
+        for index, player in enumerate(sorted_players, start=1):
+            print(f"{index}. {player.name}: {player.score}")
+
+
