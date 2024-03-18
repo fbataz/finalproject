@@ -1,6 +1,6 @@
 import threading # Module to help our game run different tasks at the same time (ie. timer)
 import time # Will help us run our timer and suspend further lines of code while timer is running
-import sys # 
+import sys # Helps manage input/outputs while our timer is running simultaneously.
 import random # Module helps perform randomization procedures such as randomizing the question order for our game
 
 questions = [
