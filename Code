@@ -67,6 +67,8 @@ class JeopardyGame:
         '''
         Method of JeopardyGame class:
         Asks a question to the player, will take their input and update their score
+        :param question: a question from the question bank
+        :param player: the player currently playing the round
         '''
         category, text, answer, points = question
         print(f"\n{player.name}, Category: {category}, Points: {points}")
