@@ -83,18 +83,18 @@ class JeopardyGame:
         player_answer = input("\nYour answer: ").strip()
         answered[0] = True
         
-        if player_answer.lower() == 'quit':
+        if player_answer.lower() == 'quit': 
             print ("Quitting the game. Thanks for playing!")
-            return True
-        if player_answer.lower() == answer.lower():
-            player.update_score(points)
+            return True 
+        if player_answer.lower() == answer.lower(): #checks to see if players answer matches correct answer (ignores case)
+            player.update_score(points) #updates the point associated with question to players total points
             print("Correct!")
         else:
             print("Incorrect.")
 
     def rank_players(self): # Method that will rank players based on their final score
         print("Game Over. Final rankings:")
-        sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True)
+        sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True) #creates new list and sorts players based on scores, ranking highest to lowest
         for index, player in enumerate(sorted_players, start=1):
             print(f"{index}. {player.name}: {player.score}")
 
