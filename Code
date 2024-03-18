@@ -37,7 +37,7 @@ class Player: # Defining Player class
 class JeopardyGame:
     def __init__(self, questions):
     """
-    Method to help initialize the questions that will be used for the round of the game.
+    Method to help initialize the questions that will be used for each round of the game.
 
     :param questions: tuple containing questions, with category, answer, and point data associated with each question. 
     """
