@@ -36,6 +36,11 @@ class Player: # Defining Player class
 
 class JeopardyGame:
     def __init__(self, questions):
+    """
+    Method to help initialize the questions that will be used for the round of the game.
+
+    :param questions: tuple containing questions, with category, answer, and point data associated with each question. 
+    """
         self.players = [] # Initializes an empty list that will include the players in the game
         self.questions = list(questions)  # Makes a copy of the questions
         self.time_limit = 10  # Adds time limit to questions
