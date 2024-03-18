@@ -24,7 +24,7 @@ questions = [
     ("Amino Acid Metabolism", "What is the main nitrogenous waste product in humans that is formed from ammonia?", "Urea", 100),
     ("Urea Cycle", "What is the final product of the urea cycle, which is excreted in urine?", "Urea", 100),
     ("Nucleotide Synthesis", "What is the precursor molecule to both adenine and guanine nucleotides?", "IMP", 100),
-]
+] # Question bank used for demoing; can be updated to suit player needs. Follows order of category, question, answer, points.
 
 class Player:
     def __init__(self, name):
