@@ -26,28 +26,28 @@ questions = [
     ("Nucleotide Synthesis", "What is the precursor molecule to both adenine and guanine nucleotides?", "IMP", 100),
 ]
 
-class Player: # Defining Player class
+class Player:
     def __init__(self, name):
-        self.name = name # Assigns the name given to each player class
-        self.score = 0 # Initializes player scores to 0 when a Player class is made
+        self.name = name
+        self.score = 0
 
     def update_score(self, points): # Method updates player score
         self.score += points
-
+        
 class JeopardyGame:
     def __init__(self, questions):
-    """
-    Method to help initialize the questions that will be used for each round of the game.
-
-    :param questions: tuple containing questions, with category, answer, and point data associated with each question. 
-    """
         self.players = [] # Initializes an empty list that will include the players in the game
         self.questions = list(questions)  # Makes a copy of the questions
         self.time_limit = 10  # Adds time limit to questions
         random.shuffle(self.questions)  # Shuffle questions
 
-    def add_player(self, name): # Method adds players to the game we are initializing
-        self.players.append(Player(name)) # Appends empty list to include players specified
+        def add_players():# Method adds players to the game we are initializing
+            num_players = int(input('Number of players:'))
+            for value in range(num_players):
+                name = input('Enter player name:') # Assigns the name given to each player class
+                score = 0 # Initializes player scores to 0 when a Player class is made
+                self.players.append(Player(name)) # Appends empty list to include players specified
+        add_players()
 
     def start(self): # Method to start the game and get it running
         question_index = 0  # Tracks the current question index
