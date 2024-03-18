@@ -45,10 +45,10 @@ class JeopardyGame:
 
 
         def add_players():# Method adds players to the game we are initializing
-            num_players = int(input('Number of players:'))
+            num_players = int(input('Number of players: '))
             player_names = []
             for value in range(num_players):
-                name = input('Enter player name:') # Assigns the name given to each player class
+                name = input('Enter player name: ') # Assigns the name given to each player class
                 score = 0 # Initializes player scores to 0 when a Player class is made
                 player_names.append(name)
             random.shuffle(player_names) # Randomizes order of names in the player_names list
@@ -61,10 +61,24 @@ class JeopardyGame:
     def start(self): # Method to start the game and get it running
         
         total_questions = len(self.questions) # Assigns an integer value to total_questions that corresponds to the length of the self.questions list
+        players_attempted = set()
         
         while self.question_index < total_questions:
             player = self.players[self.current_player_index]
-            answer = self.ask_question(self.questions[self.question_index], player) 
+            
+            if len(players_attempted) == len(self.players): # Checking lengths of set of players that attempted and list of players in the game. If equal, then all players had a turn.
+                _, _, correct_answer, _ = self.questions[self.question_index]
+                print(f"Sorry. All players have attempted. The correct answer was {correct_answer}. Moving on!")
+                self.question_index += 1
+                players_attempted.clear()
+                continue
+            
+            if player in players_attempted: # Checking if the player is in the set of players that have attempted to auto-skip that player.
+                self.current_player_index = (self.current_player_index + 1) % len(self.players)
+                continue
+            
+            answer = self.ask_question(self.questions[self.question_index], player)
+            players_attempted.add(player) # Adds current player to the set of players that have attempted the question.
             
             if answer: # Calls asks question method, passing current question
                 self.current_player_index += 0 # If answered correctly, the same player continues
