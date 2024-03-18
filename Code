@@ -92,10 +92,7 @@ class JeopardyGame:
         else:
             print("Incorrect.")
 
-    def rank_players(self):
-        '''
-        method that will rank players based on their final score
-        '''
+    def rank_players(self): # Method that will rank players based on their final score
         print("Game Over. Final rankings:")
         sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True)
         for index, player in enumerate(sorted_players, start=1):
