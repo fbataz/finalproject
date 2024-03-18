@@ -43,6 +43,7 @@ class JeopardyGame:
         self.current_player_index = 0 # Tracks the current player index
         self.question_index = 0  # Tracks the current question index
 
+
         def add_players():# Method adds players to the game we are initializing
             num_players = int(input('Number of players:'))
             player_names = []
@@ -55,6 +56,7 @@ class JeopardyGame:
                 self.players.append(Player(name)) # Adds players in a random order to self.players under initialization
         
         add_players() # Calls add_players() method
+
 
     def start(self): # Method to start the game and get it running
         
@@ -71,9 +73,7 @@ class JeopardyGame:
             if not answer: # Calls asks question method, passing current question
                 self.current_player_index = (self.current_player_index + 1) % len(self.players) # If answered incorrectly the player loses their turn, and the next player answers
                                                                                                 # The players take their turns in same order
-                self.question_index += 0 # The same question is asked again if input is incorrect
-        
-                
+                self.question_index += 0 # The same question is asked again if input is incorrect    
             
             if answer == 'quit':
                 return # Exits if 'quit' is the input
@@ -82,7 +82,8 @@ class JeopardyGame:
                 break  # Break if no more questions are left
            
         self.rank_players() # Calls rank players method
-        
+
+
     def ask_question(self, question, player): 
         """
         Method of JeopardyGame class:
@@ -138,7 +139,7 @@ class JeopardyGame:
             print("Incorrect.")
             answered[0] = True
             return False
-        
+    
 
     def rank_players(self): # Method that will rank players based on their final score
         """
