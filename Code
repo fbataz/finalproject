@@ -99,10 +99,10 @@ class JeopardyGame:
         answered = [False] # This tracks if an input has been given
         
         def timer():
-        """
-        Subfunction of ask_question method:
-        Starts a timer each time a question is asked, and executes the appropriate code if not answeered or if time is up.
-        """
+            """
+            Subfunction of ask_question method:
+            Starts a timer each time a question is asked, and executes the appropriate code if not answeered or if time is up.
+            """
             for i in range(self.time_limit, 0, -1):
                 if answered[0] or time_is_up.is_set(): # Checks if an answer is given or if time has ran out 
                     return
