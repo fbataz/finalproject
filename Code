@@ -76,7 +76,7 @@ class JeopardyGame:
                 sys.stdout.flush()
                 time.sleep(1)
             if not answered[0]:
-                print("\nTime's up!")
+                print("Time's up!")
         
         timer_thread = threading.Thread(target=timer)
         timer_thread.start()
