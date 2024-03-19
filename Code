@@ -28,14 +28,37 @@ questions = [
 
 class Player:
     def __init__(self, name):
+        """ Initializes new player with the given name and initializes score to 0.
+       
+        Parameters
+        ----------
+        name: string
+            String that takes in player name
+        """
+
         self.name = name
         self.score = 0
 
-    def update_score(self, points): # Method updates player score
+    def update_score(self, points): 
+        """ Method of class that updates the players score by the amount of points specified for each question
+        
+        Parameters
+        -----------
+        points: integer
+            the number of points that will be added to players score
+        """
         self.score += points
         
 class JeopardyGame:
     def __init__(self, questions):
+        """Initializes Jeopardy game with questions
+        
+        Paramters
+        ----------
+        questions: 
+            a list of questions for the game
+        """
+
         self.players = [] # Initializes an empty list that will include the players in the game
         self.questions = list(questions)  # Makes a copy of the questions
         self.time_limit = 15  # Adds time limit to questions
@@ -44,22 +67,34 @@ class JeopardyGame:
         self.question_index = 0  # Tracks the current question index
 
 
-        def add_players():# Method adds players to the game we are initializing
+        def add_players():
+            """ 
+            Method that adds players to the game when it is initalized
+            """
+
             num_players = int(input('Number of players: '))
             player_names = []
+
             for value in range(num_players):
                 name = input('Enter player name: ') # Assigns the name given to each player class
                 score = 0 # Initializes player scores to 0 when a Player class is made
                 player_names.append(name)
+
             random.shuffle(player_names) # Randomizes order of names in the player_names list
+
             for name in player_names:
                 self.players.append(Player(name)) # Adds players in a random order to self.players under initialization
         
         add_players() # Calls add_players() method
 
 
-    def start(self): # Method to start the game and get it running
-        
+    def start(self): 
+        """ Method that starts the game. 
+        It will go through all the questions.
+        It will go through each players turn and whether the questions are answered correctly/incorrectly.
+        It will manage whether a player wants to quit the game. 
+        """
+
         total_questions = len(self.questions) # Assigns an integer value to total_questions that corresponds to the length of the self.questions list
         players_attempted = set()
         
@@ -99,12 +134,23 @@ class JeopardyGame:
 
 
     def ask_question(self, question, player): 
+        """ Method of JeopardyGame class: Asks a question to the player, will take their input and update their score
+        
+        Parameters
+        -------------
+        question: 
+            a question from the question bank that includes - category, question, answer, points
+        
+        player: 
+            the player currently playing the round
+        
+        Returns
+        -------------
+        True if answer is correct
+        False if answer is incorrect 
+        'quit' if the player wants to quit the game 
         """
-        Method of JeopardyGame class:
-        Asks a question to the player, will take their input and update their score
-        :param question: a question from the question bank
-        :param player: the player currently playing the round
-        """
+
         category, text, answer, points = question
         print(f"\n{player.name}, Category: {category}, Points: {points}")
         print(text)
@@ -120,10 +166,12 @@ class JeopardyGame:
             for i in range(self.time_limit, 0, -1):
                 if answered[0] or time_is_up.is_set(): # Checks if an answer is given or if time has ran out 
                     return
+
                 sys.stdout.write(f"\rTime remaining: {i} seconds ") # Displays the time remaining in a single line that is 
                                                                     #overwritten every time the for loop executes
                 sys.stdout.flush() # Displays time remaining immediately as it counts down
                 time.sleep(1)
+
             if not answered[0]: 
                 print("Time's up!")
                 time_is_up.set() # If there is no answer given, time is up event is triggered.
@@ -148,6 +196,7 @@ class JeopardyGame:
             print("Correct!")
             answered[0] = True
             return True
+
         else:
             timer_thread.join()
             print("Incorrect.")
@@ -157,10 +206,10 @@ class JeopardyGame:
 
     def rank_players(self): # Method that will rank players based on their final score
         """
-        Method of JeopardyGame class:
-        Ranks layers based on descending order of earned points
+        Method of JeopardyGame class: Ranks players based on descending order of earned points
         """
         print("Game Over. Final rankings:")
         sorted_players = sorted(self.players, key=lambda x: x.score, reverse=True) # Creates new list and sorts players based on scores, ranking highest to lowest
+
         for index, player in enumerate(sorted_players, start=1): 
             print(f"{index}. {player.name}: {player.score}")
